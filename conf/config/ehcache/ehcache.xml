@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+	dynamicConfig 缓存的配置是否能够动态配置，默认为true。
+	updateCheck 是否在网络上检查ehcache的更新，默认为true。
+	monitoring 仅在使用Terracotta clustering时有效，默认为autodetect，可谓on，off。
+-->
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="ehcache.xsd"
+         updateCheck="true" monitoring="autodetect" 
+         dynamicConfig="true" >
+    <!-- <diskStore  path=""/> -->
+    
+    <defaultCache maxElementsInMemory="10000" 
+	    eternal="false" 
+	    timeToIdleSeconds="300"
+	    timeToLiveSeconds="180"
+	    overflowToDisk="true"/>
+	    
+	<!-- 
+	<cache name="">
+	
+	</cache>
+	-->
+</ehcache>
