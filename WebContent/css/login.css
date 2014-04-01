@@ -1,0 +1,76 @@
+@CHARSET "UTF-8";
+
+#bg{ 
+	margin-top:150px;
+	margin-right: auto; margin-left: auto; 
+	width:400px; height:300px;
+	border: 1px solid #000;
+	box-shadow:3px 7px 7px rgba(0,0,0,0.3);
+	border-radius: 6px;
+}
+
+#dlk{ 
+	margin-top:70px;
+	margin-right: auto; margin-left: auto; 
+	width:264px; height:142px;
+}
+
+#error_tips{
+	width:267px; 
+	height:28px;
+	background-color:#F9F5C7;
+	margin-bottom:3px; 
+	color:#red;
+	border-color:#DAD699;
+}
+
+#warning{
+	position:static;
+	display :inline-block;
+	height: 28px;
+	line-height: 28px;
+}
+
+#warning_logo{
+	position:static;
+	display :inline-block;
+	line-height: 28px;
+	height: 28px;
+	background: url(../images/login/warning.jpg) no-repeat;
+}
+
+#shu{ 
+	margin-bottom:18px; 
+	width:267px; height:31px;
+}
+.shuru{
+	width:235px; height:31px; line-height:31px; 
+	margin:0; padding:0; border:1px #b6b6b6 solid; 
+	background:#f8f9fb; 
+	border-left:0; color:#999; float:right; 
+}
+.tu{ 
+	float:left;height:33px;
+}
+
+#anniu{ 
+	width:264px; height:37px; 
+	margin-top:7px; 
+}
+
+#denglu{ 
+	width:115px; height:37px; 
+	float:left; 
+	background: url(../images/login/denglu.png) no-repeat;
+}
+#denglu:hover{
+	background: url(../images/login/denglu1.png) no-repeat; 
+}
+#quxiao{ 
+	width:115px; height:37px; 
+	float:right;  
+	background: url(../images/login/quxiao.png) no-repeat;
+}
+#quxiao:hover{ 
+	background: url(../images/login/quxiao1.png) no-repeat;
+}

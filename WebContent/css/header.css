@@ -1,0 +1,38 @@
+@CHARSET "UTF-8";
+.constrain {
+	max-width: 1440px;
+	margin: 0 px;
+	padding: 0 px;
+}
+
+nav {
+	height: 34px;
+	display: block;
+	background: #333;
+	text-shadow: none;
+	margin: 0px;
+	padding: 0px;
+	box-shadow:3px 7px 7px rgba(0,0,0,0.3);
+	/* filter:alpha(opacity=50); */
+}
+
+#welcom{
+	height: 34px;
+	float: left;
+	color: #fff;
+	text-indent:50px;
+	width: 80px;
+	white-space: nowrap;
+	font-size : 12px;
+	padding-top: 9px;
+}
+	
+body {
+	margin: 0px;
+	padding: 0px;
+	height: 100px;
+}
+
+#logo {
+	position: relative;
+}

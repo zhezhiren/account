@@ -1,0 +1,242 @@
+@CHARSET "UTF-8";
+
+#page{
+	background-color: blue;
+	width: 1000px;
+	margin: 0 auto;
+	padding: 0;
+	display: block;
+	clear: both;
+	color: #333;
+}
+
+#menu {
+	border: 1px solid #617775;background: #f0f6e4;
+	background-color: #f0f6e4;
+	float: left;
+	width: 208px;
+	min-height:420px;
+	margin: 0px;
+	padding: 40px 20px 40px 20px;
+	display: block;
+	border-radius: 6px;
+	box-shadow:3px 7px 7px rgba(0,0,0,0.3);
+}
+
+.rightContent{
+	border: 1px solid #617775;background: #f0f6e4;
+	background: #f0f6e4;
+	float: right;
+	width: 740px;
+	min-height:460px;
+	margin: 0px 0px 20px 0px;
+	padding: 20px 0px 20px 0px;
+	display: block;
+	line-height: 1.334;
+	font-size: 12px;
+	border-radius: 6px;
+	box-shadow:3px 7px 7px rgba(0,0,0,0.3);
+}
+.noShow{
+	display: none!important;
+}
+span.menuPropHead{
+	display: inline-block;
+	width:300px;
+	font-size:16px;font-weight:bold;
+	text-align: center;
+	margin-top: 20px;
+	margin-bottom: 10px;
+}
+span.menuProp{
+	width:100%;
+	margin-left:175px;
+	display: block;
+}
+input.menuProp{
+	display: inline-block;
+	border: 1px solid #617775;background: #f0f6e4;
+	background: #d0d0d0;
+	width:200px;
+	padding: 0px;
+}
+select.menuProp{
+	display: inline-block;
+	border: 1px solid #617775;background: #f0f6e4;
+	background: #d0d0d0;
+	width:200px;
+	padding: 0px;
+}
+span.menuPropDes{
+	display:inline-block;
+	margin-right:10px;
+	width:100px;
+	text-align: right;
+}
+span.menuButton{
+	display:inline-block;
+	margin-top:20px;
+	width: 100px;
+	heigth:20px;
+	border: 1px solid #617775;
+	background:#fff;
+	/* background-image:url("../images/menu/lan.png");
+	background-repeat:repeat-x; */
+	text-align: center;
+	border-radius: 8px;
+}
+
+ul.ztree {
+	padding-top: 40px;
+	margin-top: 0px;
+	border: 0px solid #617775;background: #f0f6e4;
+	width:208px;
+	overflow-y:auto;
+	overflow-x:auto;
+}
+
+#ztreeDesc {
+	padding-left: 40px;
+	margin: 0 auto;	
+}
+
+.ztree li span.button.add {
+	margin-left:2px; margin-right: -1px; 
+	background-position:-144px 0; 
+	vertical-align:top; 
+	*vertical-align:middle
+}
+
+.nopadding{
+	padding:0px;
+}
+
+.urlDiv{
+	padding: 0px 3px;
+	margin: 0px 10px;
+	list-style-type: none;
+	min-height: 20px;
+	background: #f0f6e4;
+	border-bottom: 0px;
+	border: 1px solid #000;
+	box-shadow:1px 3px 7px rgba(0,0,0,0.3);
+	border-radius: 3px;
+}
+
+ul.urlContent{
+	margin: 0px;
+	padding: 0px;
+	list-style-type: none;
+	display: inline-block;
+}
+li.operatorHead{
+	margin: 6px 12px;
+	list-style-type: none;
+	min-height: 20px;
+}
+
+li.urlContent{
+	float: left;
+	list-style-type: none;
+	margin: 0px 3px;
+	min-height: 12px;
+}
+li.seri{
+	width:26px;
+}
+li.urlName{
+	width:100px;
+}
+li.matchType{
+	width:65px;
+}
+li.url{
+	width:180px;
+}
+li.channel{
+	width:52px;
+}
+li.funcDesc{
+	width:135px;
+}
+li.authType{
+	width:60px;
+}
+li.operate{
+	width:40px;
+	height: 20px;
+}
+select.editable{
+	width:100%;
+	padding:0px;
+	margin:0px;
+	border: 0px;
+}
+li.tableHead{
+	font-weight: bold;
+	font-size:12px;
+	padding: 6px 0px;
+}
+
+input.editable{
+	width:100%;
+	heigth:100%;
+	apdding:0px;
+	margin:0px;
+	background: #fff;
+	border-left: 0px solid #000;
+	border-right: 0px;
+	border-top: 0px;
+	border-bottom: 0px;
+}
+li.editable{
+	float: left;
+	list-style-type: none;
+	margin: 0px 3px;
+	min-height: 12px;
+}
+
+span.urlOperator{
+	display: inline-block;
+	background-attachment:fixed;
+	background:#fff url(../images/login/tubiao.jpg) no-repeat;
+	min-height: 15px;
+	margin:0px;
+	padding: 0px;
+	/* border: 1px solid #000; */
+	/* box-shadow:3px 3px 7px rgba(0,0,0,0.3); */
+	border-radius: 3px;
+	margin-top:1px;
+}
+span.mouseNotOn{
+	box-shadow:2px 2px 2px rgba(0,0,0,0.3);
+}
+span.mouseOn{
+	cursor:pointer
+}
+span.onMouseDown{
+	box-shadow:2px 2px 2px rgba(0,0,0,0.3) inset;
+}
+span.updateUrlButton{
+	margin-right:2px;
+	width: 15px;
+	background-position: -94px -112px;
+}
+span.deleteUrlButton{
+	width: 15px;
+	background-position: -95px -23px;
+}
+span.saveUrlButton{
+	width: 20px;
+	background-position: -148px -80px;
+}
+span.addUrlButton{
+	display:block;
+	width: 20px;
+	background-attachment:fixed;
+	background:#fff url(../images/login/tubiao.jpg) no-repeat;
+	min-height: 20px;
+	margin:0px;
+	padding: 0px;
+	background-position: -120px -109px;
+}

@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:sec="http://www.springframework.org/schema/security"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/security
+           http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+	
+	<sec:http pattern="/403.jsp" security="none"/>
+    <sec:http pattern="/loginPage.jsp" security="none"/>
+	<sec:http pattern="/index*" security="none"/>
+	<sec:http pattern="/test/login.do" security="none"/>
+	<sec:http pattern="/js/**/*" security="none"/>
+	
+	<!-- 只要启动spring-security将构建 -->
+	<bean name="org.springframework.security.filterChainProxy" id="springSecurityFilterChain"  class="org.springframework.security.web.FilterChainProxy">
+		<constructor-arg index="0">
+			<list>
+			<!-- 
+				空列表，对每个http标签都将马上添加一个独立的过滤链
+			 -->
+			</list>
+		</constructor-arg>
+		<property name="filterChainValidator">
+			<bean class="org.springframework.security.config.http.DefaultFilterChainValidator"></bean>
+		</property>
+		
+	</bean>
+	
+	<bean name="org.springframework.security.web.PortMapperImpl" class="org.springframework.security.web.PortMapperImpl">
+	<!-- 根据http标签的子标签 prot-mapping 来设置 -->
+	<!-- 
+		<property name="portMappings">
+			<map>
+				<entry key="8080" value="8443" />
+			</map>
+		</property>
+	 -->
+	</bean>
+	
+	<!-- 只要有http标签，一定会构建 -->
+	<bean name="org.springframework.security.web.PortResolverImpl" class="org.springframework.security.web.PortResolverImpl">
+		<property name="portMapper" ref="org.springframework.security.web.PortMapperImpl" />
+	</bean>
+	
+	<!-- 只要有http标签一定会构建 -->
+	<bean class="org.springframework.security.authentication.ProviderManager">
+		<constructor-arg index="0">
+			<list>
+			<!-- 
+				空列表，用来添加authenticationProvider
+			 -->
+			</list>
+		</constructor-arg>
+		<!-- 将根据http标签的authentication-manager-ref的内容设置，默认没有 -->
+		<!-- 
+		<constructor-arg index="1"  ref= "" />
+		<property name="isEraseCredentialsAfterAuthentication">
+			<value>值通parent的该值</value>
+		</property>
+		 -->
+		<!-- 在http标签没有authentication-manager-ref时 -->
+		<constructor-arg index="1"  ref="org.springframework.security.authenticationManager" />
+		<property name="isEraseCredentialsAfterAuthentication">
+			<value>同authenticationManager的该值</value>
+		</property>
+	</bean>
+	
+	<!-- 只要有http标签，一定会构建 -->
+	<bean class="org.springframework.security.web.context.SecurityContextPersistenceFilter">
+		<constructor-arg index="0">
+			<bean name="org.springframework.security.web.context.HttpSessionSecurityContextRepository"
+				class="org.springframework.security.web.context.HttpSessionSecurityContextRepository">
+				<property name="allowSessionCreation" value="true" />
+				<property name="forceEagerSessionCreation" value="false" />
+				<property name="disableUrlRewriting" value="fasle" />
+			</bean>
+		</constructor-arg>
+		<property name="forceEagerSessionCreation" value="fasle" />
+	</bean>
+	
+	<!-- 只要有http标签，一定会构建 -->
+	<bean class="org.springframework.security.web.session.ConcurrentSessionFilter">
+		<constructor-arg index="0">
+			<bean name="org.springframework.security.core.session.SessionRegistryImpl" 
+					class="org.springframework.security.core.session.SessionRegistryImpl">
+			</bean>
+		</constructor-arg>
+		<!-- concurrency-control 标签的expired-url设置，用来作为session过期挑战页面 -->
+		<!-- 
+			<constructor-arg index="1" value="" />
+		 -->
+	</bean>
+	
+	<!-- 在有concurrent-control标签的情况下，将这样配置 -->
+	<bean class="org.springframework.security.web.authentication.session.ConcurrentSessionControlStrategy">
+		<constructor-arg index="0" ref="org.springframework.security.core.session.SessionRegistryImpl" />
+		<!-- 由sec:concurrency-control的 max-sessions属性设置，默认为1-->
+		<property name="maximumSessions" value="1" />
+		<!-- 由sec:concurrency-control的 error-if-maximum-exceeded属性设置默认为false -->
+		<property name="exceptionIfMaximumExceeded" value="false"></property>
+		<!--  -->
+		<!-- 
+		<property name="migrateSessionAttributes" value=""/>
+		 -->
+	</bean>
+	
+	
+	<bean class="org.springframework.security.web.session.SessionManagementFilter">
+		<constructor-arg index="0" ref="org.springframework.security.web.context.HttpSessionSecurityContextRepository" />
+		<constructor-arg index="1" ref="org.springframework.security.web.authentication.session.ConcurrentSessionControlStrategy" />
+		<property name="authenticationFailureHandler">
+			<bean class=" org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+				<!-- session-management标签的session-authentication-error-url属性设置 -->
+				<!-- 
+				<property name="defaultFailureUrl" value="" />
+				 -->
+			</bean>
+		</property>
+		<!-- value 值由session-management标签的 invalid-session-url属性设置，当该属性不存在时，不配置该bean -->
+		<!-- 
+		<property name="invalidSessionStrategy">
+			<bean class="org.springframework.security.web.session.SimpleRedirectInvalidSessionStrategy.SimpleRedirectInvalidSessionStrategy">
+				<constructor-arg index="0" value=""/>
+			</bean>
+		</property>
+		-->
+	</bean>
+	
+	<!-- http 标签的子标签 request-cache标签没有配置时自动设置 -->
+	<bean class="org.springframework.security.web.savedrequest.HttpSessionRequestCache">
+		<!-- 与http标签的create-session属性有关 -->
+		<property name="createSessionAllowed" value="true" />
+		<!-- 为port-mapping标签的设置的portResolver -->
+		<property name="portResolver" ref="org.springframework.security.web.PortResolverImpl" />
+	</bean>
+	
+	<!-- 有http 标签时自动设置 -->
+	<bean class="org.springframework.security.web.savedrequest.RequestCacheAwareFilter">
+		<constructor-arg index="0" ref="org.springframework.security.web.savedrequest.HttpSessionRequestCache"/>
+	</bean>
+	
+	<!-- 有http标签时自动设置,当http标签属性servlet-api-provision为false时不设置 -->
+	<bean class="org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter" />
+	
+	<!-- 有http标签，且配置jaas-api-provision为true时设置，默认不设置 -->
+	<bean class="org.springframework.security.web.jaasapi.JaasApiIntegrationFilter" />
+	
+	
+	<!-- 当http标签的intercept-url子标签为空，或者不为空，但requires-channel属性都没设置时，将不设置该bean -->
+	<bean class="org.springframework.security.web.access.channel.ChannelProcessingFilter">
+		<property name="securityMetadataSource" >
+		<bean class="org.springframework.security.web.access.intercept.DefaultFilterInvocationSecurityMetadataSource">
+			<constructor-arg index="0">
+				<map>
+					<!-- 根据 http标签的intercept-url是否包含requires-channel属性，生成RequestMatch与安全通道的映射关系。-->
+				</map>
+			</constructor-arg>
+		</bean>
+		</property>
+		<property name="channelDecisionManager" ref="org.springframework.security.web.access.channel.ChannelDecisionManagerImpl" />
+	</bean>
+	
+	<!-- 创建条件同ChannelProcessingFilter，属于从属bean -->
+	<bean class="org.springframework.security.web.access.channel.ChannelDecisionManagerImpl">
+		<property name="channelProcessors">
+			<list>
+				<ref bean="org.springframework.security.web.access.channel.SecureChannelProcessor"/>
+				<ref bean="org.springframework.security.web.access.channel.InsecureChannelProcessor"/>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 创建条件同ChannelProcessingFilter，属于从属bean -->
+	<bean class="org.springframework.security.web.access.channel.SecureChannelProcessor">
+		<property name="entryPoint" ref="org.springframework.security.web.access.channel.RetryWithHttpsEntryPoint" />
+	
+	</bean>
+	<bean class="org.springframework.security.web.access.channel.InsecureChannelProcessor">
+		<property name="entryPoint" ref="org.springframework.security.web.access.channel.RetryWithHttpEntryPoint" />
+	</bean>
+	
+	<!-- 创建条件同ChannelProcessingFilter，属于从属bean -->
+	<bean class="org.springframework.security.web.access.channel.RetryWithHttpEntryPoint">
+		<property name="portMapper" ref="org.springframework.security.web.PortMapperImpl" />
+		<property name="portResolver" ref="org.springframework.security.web.PortResolverImpl" />
+	</bean>
+	<bean class="org.springframework.security.web.access.channel.RetryWithHttpsEntryPoint">
+		<property name="portMapper" ref="org.springframework.security.web.PortMapperImpl" />
+		<property name="portResolver" ref="org.springframework.security.web.PortResolverImpl" />
+	</bean>
+	
+	<!-- 此设置项对应对是http标签的use-expressions为true的设置，不为true时，不设置，默认不设置 -->
+	<bean class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler" />
+	
+	<!-- 当有http标签，此bean必然设置。http标签的use-expressions不为true时，此bean为DefaultFilterInvocationSecurityMetadataSource -->
+	<bean class="org.springframework.security.web.access.expression.ExpressionBasedFilterInvocationSecurityMetadataSource">
+		<constructor-arg index="0">
+			<!-- 根据 http标签的intercept-url的pattern与access生成maprequestMatch与List<securityConfig>的映射-->
+			<!-- 
+			<map>
+			此处无法生成，所有注释，而非不设置项
+			</map>
+			 -->
+		</constructor-arg>
+		<constructor-arg index="1" ref="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler">
+		</constructor-arg>
+	</bean>
+	
+	<!-- 当没有access-decision-manager-ref属性时，生成改bean，有时用指定bean替代 -->
+	<bean class="org.springframework.security.access.vote.AffirmativeBased">
+		<constructor-arg index="">
+			<list>
+				<!-- 次bean在存在http标签时必设置，此处为http标签的use-expressions为true时的设置，当false时，为RoleVoter与AuthenticatedVoter两个 -->
+				<bean class="org.springframework.security.web.access.expression.WebExpressionVoter">
+					<property name="expressionHandler" ref="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler" />
+				</bean>
+			</list>
+		</constructor-arg>
+	</bean>
+	
+	<bean class="org.springframework.security.web.access.intercept.FilterSecurityInterceptor">
+		<property name="accessDecisionManager" ref="" />
+		<property name="authenticationManager" ref=""/>
+		<!-- http标签的once-per-request属性设置，默认true -->
+		<property name="observeOncePerRequest" value="true" />
+		<property name="securityMetadataSource" ref="org.springframework.security.web.access.expression.ExpressionBasedFilterInvocationSecurityMetadataSource"></property>
+	</bean>
+	
+	<bean class="org.springframework.security.web.access.DefaultWebInvocationPrivilegeEvaluator">
+		<constructor-arg ref="org.springframework.security.web.access.intercept.FilterSecurityInterceptor" />
+	</bean>
+	
+	<!-- 当存在http标签，近当anonymous子标签存在，且enabled为false时不构建 -->
+	<bean class="org.springframework.security.web.authentication.AnonymousAuthenticationFilter">
+		<!-- 通过 anonymous的key属性设置，默认随机创建，key作为项目中的一个安全码，设置越复杂越好-->
+		<constructor-arg index="0" value="key" />
+		<!-- 可以通过anonymous的username属性设置，作为游客的标志 -->
+		<constructor-arg index="0" value="userName" />
+		<!-- 可以通过anonymous的granted-authority设置，作为游客拥有的角色名 -->
+		<constructor-arg index="0">
+			<list>
+				<bean class="org.springframework.security.core.authority.SimpleGrantedAuthority.SimpleGrantedAuthority">
+					<constructor-arg index="0" value="" />
+				</bean>
+			</list>
+		</constructor-arg>
+	</bean>
+	
+	<!-- 设置条件同AnonymousAuthenticationFilter -->
+	<bean class="org.springframework.security.authentication.AnonymousAuthenticationProvider">
+		<!-- key 与AnonymousAuthenticationFilter的key相同-->
+		<constructor-arg index="0" value="key"/>
+	</bean>
+	
+	<!-- 当有配置remember-me标签时，设置该bean -->
+	<bean class="org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices">
+		<constructor-arg index="0" value="key" />
+		<constructor-arg index="1">
+		
+		</constructor-arg>
+	</bean>
+	
+	<!--  -->
+	<bean class="org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter">
+		<constructor-arg index="0" ref="authenticationManager" />
+		<constructor-arg index="1" ref="servicesName" />
+		<!-- authentication-success-handler-ref -->
+		<!-- 
+		<property name="authenticationSuccessHandler" ref="" />
+		 -->
+	</bean>
+	
+	<sec:http use-expressions="true"   access-denied-page="/403.jsp" auto-config="true">
+		<sec:anonymous  enabled="true" granted-authority="anonymous" key="123456" username="游客"/>
+		
+		<sec:form-login login-page="/loginPage.jsp"  password-parameter="password"
+		    login-processing-url="/login_check"
+			username-parameter="username" default-target-url="/index.jsp"/>
+        <sec:logout delete-cookies="JSESSIONID" logout-success-url="/logout.jsp"/>
+        
+        <sec:remember-me />
+        <sec:port-mappings>
+        	<sec:port-mapping http="" https=""/>
+        </sec:port-mappings>
+        
+        <sec:session-management invalid-session-url="/timeout.jsp" >
+        	<sec:concurrency-control  max-sessions="1" error-if-maximum-exceeded="true"/>
+        </sec:session-management>
+        <sec:custom-filter ref="myFilter" after="FILTER_SECURITY_INTERCEPTOR"/>  
+	</sec:http>
+	
+	<!-- 
+    <bean id="usersDao" class="com.plj.common.tools.springsecurity.UsersDao" />
+	 -->
+	<bean id="myFilter" class="com.plj.common.tools.springsecurity.MyFilterSecurityInterceptor">
+		<property name="authenticationManager" ref="myAuthenticationManager" />
+		<property name="accessDecisionManager" ref="myAccessDecisionManager" />
+		<property name="securityMetadataSource" ref="mySecurityMetadataSource" />
+	</bean>
+	
+	<sec:authentication-manager alias="myAuthenticationManager">
+		<sec:authentication-provider user-service-ref="myUserDetailServiceImpl"></sec:authentication-provider>
+	</sec:authentication-manager>
+	
+	<bean id= "myUserDetailServiceImpl" class="com.plj.common.tools.springsecurity.MyUserDetailService">
+		<!-- <property name="usersDao" ref="usersDao"></property> -->
+	</bean>
+	
+	<bean id="myAccessDecisionManager" class="com.plj.common.tools.springsecurity.MyAccessDecisionManager">
+		
+	</bean>
+	
+	<bean id="mySecurityMetadataSource" class="com.plj.common.tools.springsecurity.MyInvocationSecurityMetadataSource">
+		<!-- <constructor-arg name="resourcesDao" ref="resourcesDao"></constructor-arg>   -->
+	</bean>
+	
+</beans>

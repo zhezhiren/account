@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.plj.dao.admin.sys.UrlInfoDao" >
+  <resultMap id="urlInfo" type="com.plj.domain.decorate.admin.sys.UrlInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="url_name" property="urlName" jdbcType="VARCHAR" />
+    <result column="menu_id" property="menuId" jdbcType="INTEGER" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="channel" property="channel" jdbcType="VARCHAR" />
+    <result column="match_type" property="matchType" jdbcType="VARCHAR" />
+    <result column="auth_type" property="authType" jdbcType="VARCHAR" />
+    <result column="func_desc" property="funcDesc" jdbcType="VARCHAR" />
+    <result column="is_access" property="isAccess" jdbcType="TINYINT" />
+  </resultMap>
+  <sql id="field" >
+    id, url_name, menu_id, url, channel, match_type, auth_type, func_desc, is_access
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="urlInfo" parameterType="java.lang.Integer" >
+    select 
+    <include refid="field" />
+    from sys_menu_url_t
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <insert id="insert" parameterType="com.plj.domain.decorate.admin.sys.UrlInfo" >
+    insert into sys_menu_url_t (id, url_name, menu_id, 
+      url, channel, match_type, auth_type, func_desc, is_access)
+    values (#{id,jdbcType=INTEGER}, #{urlName,jdbcType=VARCHAR}, #{menuId,jdbcType=INTEGER}, 
+      #{url,jdbcType=VARCHAR}, #{channel,jdbcType=VARCHAR}, 
+      #{matchType,jdbcType=VARCHAR}, #{authType,jdbcType=VARCHAR},
+      #{funcDesc,jdbcType=VARCHAR}, #{isAccess, jdbcType=TINYINT})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.plj.domain.decorate.admin.sys.UrlInfo" >
+    insert into sys_menu_url_t
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="urlName != null" >
+        url_name,
+      </if>
+      <if test="menuId != null" >
+        menu_id,
+      </if>
+      <if test="url != null" >
+        url,
+      </if>
+      <if test="channel != null" >
+        channel,
+      </if>
+      <if test="matchType != null" >
+        match_type,
+      </if>
+      <if test="authType != null" >
+        auth_type,
+      </if>
+      <if test="funcDesc != null" >
+        func_desc,
+      </if>
+      <if test="isAccess != null">
+      	is_access
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="urlName != null" >
+        #{urlName,jdbcType=VARCHAR},
+      </if>
+      <if test="menuId != null" >
+        #{menuId,jdbcType=INTEGER},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="channel != null" >
+        #{channel,jdbcType=VARCHAR}, 
+      </if>
+      <if test="matchType != null" >
+        #{matchType,jdbcType=VARCHAR},
+      </if>
+      <if test="authType != null" >
+        #{authType,jdbcType=VARCHAR},
+      </if>
+      <if test="funcDesc != null" >
+        #{funcDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="isAccess != null">
+      	#{isAccess, jdbcType=TINYINT}
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.plj.domain.decorate.admin.sys.UrlInfo" >
+    update sys_menu_url_t
+    <set >
+      <if test="urlName != null" >
+        url_name = #{urlName,jdbcType=VARCHAR},
+      </if>
+      <if test="menuId != null" >
+        menu_id = #{menuId,jdbcType=INTEGER},
+      </if>
+      <if test="url != null" >
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="channel != null" >
+        channel = #{channel,jdbcType=VARCHAR}, 
+      </if>
+      <if test="matchType != null" >
+        match_type = #{matchType,jdbcType=VARCHAR},
+      </if>
+      <if test="authType != null" >
+        auth_type = #{authType,jdbcType=VARCHAR},
+      </if>
+      <if test="funcDesc != null" >
+        func_desc = #{funcDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="isAccess != null">
+      	is_access = #{isAccess, jdbcType=VARCHAR}
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="com.plj.domain.decorate.admin.sys.UrlInfo" >
+    update sys_menu_url_t
+    set url_name = #{urlName,jdbcType=VARCHAR},
+      menu_id = #{menuId,jdbcType=INTEGER},
+      url = #{url,jdbcType=VARCHAR},
+      channel = #{channel,jdbcType=VARCHAR}, 
+      match_type = #{matchType,jdbcType=VARCHAR},
+      auth_type = #{authType,jdbcType=VARCHAR},
+      func_desc = #{funcDesc,jdbcType=VARCHAR},
+      is_access = #{isAccess,jdbcType=TINYINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="selectList" parameterType="map" resultMap="urlInfo">
+  	SELECT 
+  	<include refid="field" />
+  	FROM sys_menu_url_t 
+  	<where>
+	  	<if test="null != menuId">
+	  		menu_id = #{menuId,jdbcType=INTEGER}
+	  	</if>
+	  	<if test="null != isAccess">
+	  		AND is_access = #{isAccess, jdbcType=TINYINT}
+	  	</if>
+  	</where>
+  </select>
+  
+  <delete id="deleteByPrimaryKeys" parameterType="list">
+  	<if test="keys != null">
+	  	DELETE FROM sys_menu_url_t
+	  	WHERE id IN(
+	  		<foreach collection="keys" separator="," item="id">
+	  			#{id}
+	  		</foreach>
+	  	)
+  	</if>
+  </delete>
+  
+  <delete id="deleteUrlInfoByMenuIds" parameterType="list">
+  		DELETE FROM sys_menu_url_t
+	  	WHERE menu_id IN(
+	  		<foreach collection="menuIds" separator="," item="id">
+	  			#{id}
+	  		</foreach>
+	  	)
+  </delete>
+</mapper>

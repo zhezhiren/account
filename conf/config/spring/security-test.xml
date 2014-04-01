@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/security
+           http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+	
+	<global-method-security pre-post-annotations="enabled" />   
+	
+	<!-- 
+		 1 全局属性
+		 path-type: 该属性至请求地址匹配式的类型，包含ant，regex与ciRegex三种。默认ant表达式。
+		 
+		 
+		 2 这些属性都与SECURITY_CONTEXT_FILTER过滤器相关。与该过滤器相关的属性都在此设置。
+		 create-session: 是否创建session，默认为ifRequired。 这个属性影响很多filter的创建。SECURITY_CONTEXT_FILTER的forceEagerSessionCreation属性，
+		   并影响默认的HttpSessionSecurityContextRepository的allowSessionCreation属性,前者为请求是否默认创建session，后者为在处理完过滤链后，保存context时，session为空时是否创建session。
+		 always时两者都为true。never时两种都为false。stateless与ifRequired时forceEagerSessionCreation为false，allowSessionCreation为true。
+		   并且该值为stateless时，security-context-repository-ref默认使用NullSecurityContextRepository，否则为HttpSessionSecurityContextRepository。
+		 security-context-repository-ref: 自定义的session策略的处理接口。 属于SECURITY_CONTEXT_FILTER的属性，
+		   有该属性将忽略disable-url-rewriting属性，默认为HttpSessionSecurityContextRepository或者NullSecurityContextRepository的实例，默认值与create-session相关
+		 disable-url-rewriting 当没有security-context-repository-ref属性时起效，默认为false。该属性标示Response的encodeRedirectUrl方法与encodeUrl方法是否起作用，具体这两份方法的作用可能得查看另外的开元jar包来查看。
+		 
+		 3 servlet-api-provision: 该属性用来配置是否开启SERVLET_API_SUPPORT_FILTER,为true时开启，默认为true，仅配置为false时，将不开启SERVLET_API_SUPPORT_FILTER。
+		   在该filter中将request封装在SecurityContextHolderAwareRequestWrapper中，通过这个类的封装，把权限信息与原始的servlet的权限信息兼容，即把security中的权限信息通过这个类的封装，可以通过servlet的api调用到相应的权限信息。
+		 
+		 
+	 -->
+	
+	<http path-type="ant" servlet-api-provision="true" security="none" auto-config="false" create-session="ifRequired"
+		security-context-repository-ref="" disable-url-rewriting="true"
+	 >
+	
+		<!-- 本处是对请求路径的权限的定义。在权限验证时可能用到。部分属性与CHANNEL_FILTER相关。
+			 filters 本属性的none属性在本版本中已经不再支持。可以使用 http标签的security="none"属性代替。
+			 pattern 匹配的路径的表达式。表达式类型由http标签path-type属性指定，默认为ant表达式。有regex与ciRegex三中表达式。
+			 method 匹配的方法类型，。
+			 access 本匹配式对应的地址可访问的条件。
+			 requires-channel 是否需要通道。有https，https，any三种。将根据所有的intercept标签的改属性是否为空，决定是否构建
+			 CHANNEL_FILTER，不为空则构建该filter。将根据所有的intercept-url构建metadatasource.建立请求匹配式与通道的映射关系。
+		 -->
+		<intercept-url pattern="" method="GET" filters="none" access="" requires-channel="http"/>
+		
+		<!-- 与REMEMBER_ME_FILTER相关联 仅有当配置该标签时，将创建REMEMBER_ME_FILTER过滤器,将使用SPRING_SECURITY_REMEMBER_ME_COOKIE作为name保存cookie信息。
+			 key 用来构建Authentication对象时使用的key。
+			 services-ref 该属性与 data-source-ref、token-repository-ref、user-service-ref、token-validity-seconds不能同时设置
+			   在有配置token-repository-ref或者data-source-ref时，默认为PersistentTokenBasedRememberMeServices，否则使用TokenBasedRememberMeServices。
+			 token-repository-ref 使用PersistentTokenBasedRememberMeServices作为service，并自己构建token-repository来作为持久化策略。
+			 data-source-ref 使用PersistentTokenBasedRememberMeServices作为service，并使用JdbcTokenRepositoryImpl作为token-repository，指定数据源。该属性不能与token-repository-ref同时设置
+			 services-alias rememberMeServices的别名。
+			 authentication-success-handler-ref  等路成功后的处理器。
+			 use-secure-cookie 设置默认services的useSecureCookie属性，该属性用来在setCookie时，写入表示cookie的setSecure属性。
+			 token-validity-seconds 设置默认services的tokenValiditySeconds属性，该属性
+			 user-service-ref 设置默认services时userDetailsService属性。没设置则取默认的user-service。即id为BeanIds.USER_DETAILS_SERVICE_FACTORY(org.springframework.security.userDetailsServiceFactory)的bean。
+		 -->
+		<remember-me key="" services-ref="" data-source-ref="" services-alias=""
+			authentication-success-handler-ref="" token-repository-ref=""
+			use-secure-cookie="true" token-validity-seconds="5"
+			user-service-ref=""
+			/>
+		
+		<!-- ANONYMOUS_FILTER 仅且enable为false时不配置该过滤器。
+			 enabled 是否使用游客过滤器，   默认为true。
+		     granted-authority 游客分配的角色名称是什么，默认为  ROLE_ANONYMOUS
+		     username 游客的默认用户名  默认为  anonymousUser
+		     key 默认为long型随机数
+		     -->
+		<anonymous enabled="true" granted-authority="游客" key="112" username="陆仁贾"/>
+		
+		
+		<!-- 当该标签不为空或者auto-config为true时将配置FORM_LOGIN_FILTER。
+			 login-page登录页面的地址，有了该属性将不会构建LOGIN_PAGE_FILTER对应的过滤器    默认为LOGIN_PAGE_FILTER生成的html代码。该地址为/spring_security_login
+			 login-processing-url 处理登录请求的地址，这个地址对应的请求会被滤器截取，并且由UsernamePasswordAuthenticationFilter
+			    对用户的登录进行验证，验证后返回。最终不会进入servlet处理，也不会进入其他mvc的control层进行处理，
+			    除非这个地址在intercept-url或者http标签中定义了filters="none"属性。 默认为/j_spring_security_check
+			 username-parameter请求中的用户名参数对应的属性，  默认为j_username
+			 password-parameter请求中用户密码对应的属性。默认为j_password
+			 default-target-url请求成功后跳转的默认地址。 在authentication-success-handler-ref没配置时起效。默认为false。
+			 always-use-default-target 是否总是跳转至默认地址。在authentication-success-handler-ref没配置时起效。默认为"/"。
+			 authentication-failure-url 请求失败后跳转的地址。在authentication-failure-handler-ref没配置时起效。默认为如果有设置login-page，与其相同，否则为"/spring_security_login?login_error"。
+			 authentication-details-source-ref 设置filter的authenticationDetailsSource设置为该属性(作用未定？)默认为WebAuthenticationDetailsSource
+			 authentication-failure-handler-ref 没配置时默认设置了SimpleUrlAuthenticationFailureHandler
+			 authentication-success-handler-ref 没配置时默认配置了SavedRequestAwareAuthenticationSuccessHandler
+		-->
+		<form-login login-page="" login-processing-url="" password-parameter="" username-parameter=""
+			default-target-url="" always-use-default-target="true" authentication-failure-url=""
+			authentication-details-source-ref="" authentication-failure-handler-ref=""
+			authentication-success-handler-ref=""/>
+		
+		<!-- 当http标签的auto-config为true时或者有配置该标签时将配置LOGOUT_FILTER过滤器
+			 delete-cookies 登录时删除的cookie信息的名称，多个cookie以‘,’隔开.(有该属性将配置CookieClearingLogoutHandler添加至logoutHandlers，否则不配置)。
+			 invalidate-session 是否删除使session信息失效。默认为true。(添加SecurityContextLogoutHandler至logoutHandlers)。
+			 logout-url 处理登出的url，该url对应的请求会被LOGOUT_FILTER过滤器截取，并做处理并返回。最终实际上是不会被servlet处理。默认为"/j_spring_security_logout"
+			 logout-success-url 登出成功后，跳转的地址。默认为"/" 相对于构建SimpleUrlLogoutSuccessHandler作为success-handler-ref。
+			 success-handler-ref 登录成功后的处理器。与logout-success-url两个只能配置一个。
+			 -->
+		<logout delete-cookies="" invalidate-session="true" logout-url=""
+			logout-success-url="" success-handler-ref="" />
+		
+		<!-- 
+			invalid-session-url session失效后跳转的路径
+			session-authentication-error-url
+			session-authentication-strategy-ref
+			session-fixation-protection 默认值为migrateSession 不能与session-authentication-strategy-ref同时配置
+		 -->
+		<session-management invalid-session-url="" session-authentication-error-url="" 
+			session-authentication-strategy-ref="" session-fixation-protection="none">
+			<!-- 该子标签与session-authentication-strategy-ref不能同时配置
+				error-if-maximum-exceeded
+				expired-url
+				max-sessions
+				session-registry-alias
+				session-registry-ref
+			 -->
+			<concurrency-control error-if-maximum-exceeded="true" expired-url=""
+				max-sessions="1" session-registry-alias="" session-registry-ref=""
+			/>
+		</session-management>
+		
+		<!-- REQUEST_CACHE_FILTER 该过滤器无论什么时候都会创建，这个标签用来配置该标签的一些属性
+			   配置缓存权限信息的方式。当自己不编写自己的权限缓存策略时，该标签无需配置，将根据session策略自动配置。
+			 ref 处理权限信息缓存的策略。 
+			   该对象的默认实例与session策略相关。session策略在http标签的create-session属性中设置
+			   当session策略为stateless时，ref默认为为NullRequestCache的实例，表示不缓存权限信息。
+			   否则默认为HttpSessionRequestCache，表示权限信息缓存在session中。
+		 -->
+		<request-cache ref=""/>
+		
+		<!-- 配置请求头信息中Authorization包含的登录信息验证登录。当有该标签时或者http标签的auto-config为true时将配置BASIC_AUTH_FILTER。
+			entry-point-ref 当配置该标签时，默认构建BasicAuthenticationEntryPoint，当请求验证失败时，调用该实例将错误信息写入response中。
+			authentication-details-source-ref 已有默认的WebAuthenticationDetailsSource，无需设置，作用猜测为构架请求的唯一标示
+		 -->
+		<http-basic entry-point-ref="" authentication-details-source-ref=""/>
+		
+		<!-- 待补 -->
+		<openid-login >
+			<attribute-exchange identifier-match="">
+				<openid-attribute count="1" name="" type="" required="true"/>
+			</attribute-exchange>
+		</openid-login>
+		<jee mappable-roles="" user-service-ref=""/>
+		<x509 authentication-details-source-ref="" subject-principal-regex=""
+			user-service-ref="" 
+		/>
+		
+		<!--  -->
+		<port-mappings >
+			<port-mapping http="8080" https="8449"/>
+		</port-mappings>
+		 
+		 <!-- 
+		 	 error-page 没有权限时的跳转路径
+		 	 ref 自定义的没有权限时的处理方法  与error-page互斥。
+		  -->
+		<access-denied-handler error-page="" ref=""/>
+		
+		<!-- 
+			 ref
+		 -->
+		<expression-handler ref=""/>
+		
+	</http>
+	
+	<!-- 提供用来做用户验证的管理，通过一个authenticationProvider列表，循环调用用户验证方法对用户进行验证，
+		   这些验证包含游客验证，cookie记住用户验证，用户名密码登陆验证等等验证，一个返回正常则验证通过,这些验证开始前会调用support方法对参数类型进行验证，比如rememberMeProvider只对RememberMeAuthenticationToken类型的参数进行验证，只有满足这个条件才会后面的操作进行验证。
+		   该操作的意义在于不同provider只对对应的请求进行验证，记住用户的provider只对通过remember-me过滤器构建的请求进行验证，也可以避免重复的验证，有的过滤器的验证操作在进入provider前已经完成，无需再provider中再进行验证，通过support来避免这种情况。
+		   此处仅仅配置用户登陆authenticationProvider。其他provider在http标签中配置。
+		   在manager中将添加一个默认的DefaultAuthenticationEventPublisher
+		 alias 别名
+		 id    唯一标示默认为org.springframework.security.authenticationManager，此值最好不设
+		 erase-credentials 默认为true
+	 -->
+	<authentication-manager alias="" id="" erase-credentials="true">
+		<!-- 用来提供用户的设置，将构建一个DaoAuthenticationProvider，提供用户查询操作。根据子标签的配置，设置不同的查询用户的操作。
+			 ref 当包含ref标签时，不能再包含其他provider,并且不能有子标签.当没有ref属性时可以有多个authentication-provider标签
+			   每个标签的authentication-provider子标签1 user-service、2 jdbc-user-service、3 ldap-user-service3个子标签
+			   可以都配置，但只有一个会起效。起效的顺序按照序号的上述顺序；并且这三个与user-service-ref属性不能同时配置。同时配置将抛错。
+			 user-service-ref 获取用户信息的service，需实现接口。
+		 -->
+		<authentication-provider ref="" user-service-ref="">
+			<!-- 把该列中的用户信息放入内存中。作为用户信息。
+				 id 唯一标示
+				 properties 用户对应的properties文件。
+			 -->
+			<user-service id="" properties="">
+				<user name="" authorities="" />
+			</user-service>
+			
+			<!-- 
+				 data-source-ref 数据源接口
+				 
+			 -->
+			<jdbc-user-service data-source-ref="" />
+			
+			<!-- 
+				 
+			 -->
+			<ldap-user-service />
+			<!-- 配置加密器，不配置则不加密
+				 base64  是否把加密后的密码编码成base64密码。 默认为false
+				 hash 加密的算法 有plaintext，sha，sha-256，md4，md5，{sha}，{ssha}等几种
+				 ref 加密器的接口，有该值则上述两个配置不起效。
+			 -->
+			<password-encoder base64="true" hash="plaintext" ref="">
+				<!-- 
+					 
+				 -->
+				<salt-source ref="" system-wide="" user-property=""/>
+			</password-encoder>
+		</authentication-provider>
+	</authentication-manager>
+	
+</beans:beans>
