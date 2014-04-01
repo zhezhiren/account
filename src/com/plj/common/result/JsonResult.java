@@ -7,7 +7,7 @@ import java.util.List;
 import com.alibaba.fastjson.JSON;
 import com.plj.common.error.ErrorCode.SystemCode;
 import com.plj.common.error.ErrorMsg.SystemMsg;
-import com.plj.common.error.MyError;
+import com.plj.common.error.Problem;
 
 public class JsonResult implements Serializable
 {
@@ -18,7 +18,7 @@ public class JsonResult implements Serializable
 	private static final long serialVersionUID = -7045259646067973776L;
 	
 	private boolean success;//本次请求是否成功
-	private List<MyError> errors;//本次请求失败的原因列�?
+	private List<Problem> problems;//本次请求失败的原因列�?
 	private Object data;//本次请求成功返回的数�?
 	
 	public JsonResult()
@@ -26,19 +26,19 @@ public class JsonResult implements Serializable
 		success = true;//请求默认为成功的
 	}
 	
-	public void addError(String errorCode, String errorMsg){
-		addError(new MyError(errorCode, errorMsg));
+	public void addProblem(String errorCode, String errorMsg){
+		addProblem(new Problem(errorCode, errorMsg));
 	}
 	
-	public void addError(MyError error)
+	public void addProblem(Problem error)
 	{
 		if(null != error)//错误对象部位�?
 		{
-			if(null == errors)
+			if(null == problems)
 			{
-				errors = new ArrayList<MyError>();//错误列表为空则初始化
+				problems = new ArrayList<Problem>();//错误列表为空则初始化
 			}
-			errors.add(error);
+			problems.add(error);
 			success = FALSE;//错误列表不为空，则success设置为false
 		}
 	}
@@ -51,12 +51,12 @@ public class JsonResult implements Serializable
 		this.success = success;
 	}
 	
-	public List<MyError> getErrors() {
-		return errors;
+	public List<Problem> getProblems() {
+		return problems;
 	}
 	
-	public void setErrors(List<MyError> errors) {
-		this.errors = errors;
+	public void setProblems(List<Problem> errors) {
+		this.problems = errors;
 	}
 	
 	public Object getData() {
@@ -86,16 +86,16 @@ public class JsonResult implements Serializable
 		this.data = data;
 	}
 	
-	public String errorMsgs()
+	public String problemMsgs()
 	{
 		String errorMsgs = null;
-		if(null != errors && errors.size() > 0)
+		if(null != problems && problems.size() > 0)
 		{
 			StringBuilder errorMsgsBuilder = new StringBuilder();
-			for(int i = 0; i < errors.size(); i++)
+			for(int i = 0; i < problems.size(); i++)
 			{
-				MyError error = errors.get(i);
-				errorMsgsBuilder.append(error.getErrorMsg()).append("  ");
+				Problem error = problems.get(i);
+				errorMsgsBuilder.append(error.getProblemMsg()).append("  ");
 			}
 			errorMsgs = errorMsgsBuilder.toString();
 		}
@@ -112,14 +112,14 @@ public class JsonResult implements Serializable
 		
 		JsonResult js2 = new JsonResult();
 		js.setSuccess(false);
-		List<MyError> errors = new ArrayList<MyError>();
-		MyError error1 = new MyError();
-		error1.setErrorCode(SystemCode.UNKNOW);
-		error1.setErrorMsg(SystemMsg.UNKNOW);
-		MyError error2 = new MyError();
+		List<Problem> errors = new ArrayList<Problem>();
+		Problem error1 = new Problem();
+		error1.setProblemCode(SystemCode.UNKNOW);
+		error1.setProblemMsg(SystemMsg.UNKNOW);
+		Problem error2 = new Problem();
 		errors.add(error1);
 		errors.add(error2);
-		js2.setErrors(errors);
+		js2.setProblems(errors);
 		System.out.println(JSON.toJSON(js2));
 	}
 }

@@ -20,13 +20,16 @@
 	
 	<!-- 对于@RequestMapping标签的解析 可选配置--> 
 	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+		<!-- 
 		<property name="interceptors">
 			<list>
 				<ref bean="accessContextInterceptor"/>
 			</list>
 		</property>
+		 -->
 	</bean>
 	
+	<!-- 
 	<bean id="accessContextInterceptor" class="com.plj.common.tools.springmvc.AccessControlInterceptor">
 		<property name="whiteList">
 			<list>
@@ -35,7 +38,7 @@
 			</list>
 		</property>
 	</bean>
-	
+	 -->
 	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
 		<property name="messageConverters">
             <list>

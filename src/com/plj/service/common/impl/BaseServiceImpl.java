@@ -4,32 +4,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.mybatis.spring.SqlSessionTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-
 import com.plj.dao.common.BaseDao;
 import com.plj.service.common.BaseService;
 
 public abstract class BaseServiceImpl<T, D extends BaseDao<T>> implements BaseService<T, D>
 {
-	@Autowired
-	@Qualifier("simpleSqlSession")
-	SqlSessionTemplate session;
-	
-	@Autowired
-	@Qualifier("batchSqlSession")
-	SqlSessionTemplate batchSession;
 	
 	/**
 	 * 
 	 * @return 返回本service 需要调用的Dao， 这个dao操作对应T这个对象的表，并且这个dao的返回实例为T对象
-	 * 比如，假设对应ac_role表，返回的对象为role。
-	 * 那么getDao就返回RoleDao。
-	 * RoleDao对应的表为ac_role, 
+	 * 比如，假设对于ac_role表。对应的对象为Role。RoleDao为ac_role的操作dao。RoleService为ac_role的操作service。
+	 * 那么RoleService继承本对象D就是RoleDao， T就是Role。
 	 * 
 	 */
-	protected abstract String getDaoNameSpace();
+	protected abstract D getDao();
 	
 	@Override
 	public int insert(T param)
@@ -37,8 +25,7 @@ public abstract class BaseServiceImpl<T, D extends BaseDao<T>> implements BaseSe
 		int result = 0;
 		if(null != param)
 		{
-			String statement = getDaoNameSpace() + "insert";
-			result = session.insert(statement, param);
+			result = getDao().insert(param);
 		}
 		return result;
 	}
@@ -50,25 +37,23 @@ public abstract class BaseServiceImpl<T, D extends BaseDao<T>> implements BaseSe
 	}
 	
 	@Override
-	public int updateByPrimartKey(T param)
+	public int updateByPrimaryKey(T param)
 	{
 		int result = 0;
 		if(null != param)
 		{
-			String statement = getDaoNameSpace() + "updateByPrimartKey";
-			result = session.update(statement, param);
+			result = getDao().updateByPrimaryKey(param);
 		}
 		return result;
 	}
 	
 	@Override
-	public int updateByPrimartKeySelective(T param)
+	public int updateByPrimaryKeySelective(T param)
 	{
 		int result = 0;
 		if(null != param)
 		{
-			String statement = getDaoNameSpace() + "updateByPrimartKeySelective";
-			result = session.update(statement, param);
+			result = getDao().updateByPrimaryKeySelective(param);
 		}
 		return result;
 	}
@@ -82,8 +67,7 @@ public abstract class BaseServiceImpl<T, D extends BaseDao<T>> implements BaseSe
 			HashMap<String, T> map = new HashMap<String, T>(2);
 			map.put("param", param);
 			map.put("value", value);
-			String statement = getDaoNameSpace() + "updateByExampleSelective";
-			result = session.update(statement, map);
+			result = getDao().updateByExampleSelective(map);
 		}
 		return result;
 	}
@@ -94,8 +78,7 @@ public abstract class BaseServiceImpl<T, D extends BaseDao<T>> implements BaseSe
 		T result = null;
 		if(value != null)
 		{
-			String statement = getDaoNameSpace() + "selectByPrimaryKey";
-			result = session.selectOne(statement, value);
+			result = getDao().selectByPrimaryKey(value);
 		}
 		return result;
 	}
@@ -103,8 +86,7 @@ public abstract class BaseServiceImpl<T, D extends BaseDao<T>> implements BaseSe
 	@Override
 	public List<T> selectList(Map<String, ? extends Object> param)
 	{
-		String statement = getDaoNameSpace() + "selectList";
-		List<T> result = session.selectList(statement, param);
+		List<T> result = getDao().selectList(param);
 		return result;
 	}
 	
@@ -114,8 +96,7 @@ public abstract class BaseServiceImpl<T, D extends BaseDao<T>> implements BaseSe
 		int result = 0;
 		if(keys != null && keys.size() > 0)
 		{
-			String statement = getDaoNameSpace() + "deleteByPrimaryKeys";
-			result = session.delete(statement, keys);
+			result = getDao().deleteByPrimaryKeys(keys);
 		}
 		return result;
 	}
@@ -126,8 +107,7 @@ public abstract class BaseServiceImpl<T, D extends BaseDao<T>> implements BaseSe
 		int result = 0;
 		if(params != null && params.keySet() != null && params.keySet().size() > 0)
 		{
-			String statement = getDaoNameSpace() + "deleteByKeys";
-			result = session.delete(statement, params);
+			result = getDao().deleteByKeys(params);
 		}
 		return result;
 	}

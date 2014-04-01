@@ -11,9 +11,9 @@ public interface BaseService2<T, D extends BaseDao<T>>
 	
 	public int insertList(List<T> param	);
 	
-	public int updateByPrimartKey(T param);
+	public int updateByPrimaryKey(T param);
 	
-	public int updateByPrimartKeySelective(T param);
+	public int updateByPrimaryKeySelective(T param);
 	
 	public int updateByExampleSelective(T value, T param);
 	

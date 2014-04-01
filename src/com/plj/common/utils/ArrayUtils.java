@@ -4,7 +4,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.plj.common.error.MyError;
+import com.plj.common.error.Problem;
 
 /**
  * æ•°ç»„è¾…åŠ©ç±?
@@ -51,11 +51,11 @@ public class ArrayUtils {
 	 * @param errors
 	 * @return
 	 */
-	public static String join(List<MyError> errors) {
+	public static String join(List<Problem> errors) {
 		StringBuffer buffer = new StringBuffer();
-		for (MyError err : errors) {
+		for (Problem err : errors) {
 			buffer.append(MessageFormat.format("´íÎó[´úÂë:{0}, ÏûÏ¢:{1}],",
-					err.getErrorCode(), err.getErrorMsg()));
+					err.getProblemCode(), err.getProblemMsg()));
 		}
 		if (buffer.length() > 0) {
 			buffer.setLength(buffer.length() - 1);

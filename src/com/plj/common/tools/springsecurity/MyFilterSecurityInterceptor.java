@@ -8,16 +8,21 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
+import org.apache.catalina.Session;
 import org.springframework.security.access.SecurityMetadataSource;
 import org.springframework.security.access.intercept.AbstractSecurityInterceptor;
 import org.springframework.security.access.intercept.InterceptorStatusToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 
 public class MyFilterSecurityInterceptor extends AbstractSecurityInterceptor
-        implements Filter {
-
+		implements Filter 
+{
     private FilterInvocationSecurityMetadataSource securityMetadataSource;
 
     // ~ Methods
@@ -41,6 +46,9 @@ public class MyFilterSecurityInterceptor extends AbstractSecurityInterceptor
      */
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain) throws IOException, ServletException {
+//    	HttpServletRequest re = (HttpServletRequest) request;
+//    	HttpSession session = re.getSession();
+//    	((Authentication)((SecurityContext) session.getAttribute("SPRING_SECURITY_CONTEXT")).getAuthentication()).getPrincipal();
         FilterInvocation fi = new FilterInvocation(request, response, chain);
         invoke(fi);
     }
@@ -63,21 +71,25 @@ public class MyFilterSecurityInterceptor extends AbstractSecurityInterceptor
         }
     }
 
-    public SecurityMetadataSource obtainSecurityMetadataSource() {
+    public SecurityMetadataSource obtainSecurityMetadataSource() 
+    {
         return this.securityMetadataSource;
     }
 
     public void setSecurityMetadataSource(
-            FilterInvocationSecurityMetadataSource newSource) {
+    		FilterInvocationSecurityMetadataSource newSource) 
+    {
         this.securityMetadataSource = newSource;
     }
 
     @Override
-    public void destroy() {
+    public void destroy() 
+    {
     }
 
     @Override
-    public void init(FilterConfig arg0) throws ServletException {
+    public void init(FilterConfig arg0) throws ServletException 
+    {
     }
 
 }

@@ -8,6 +8,8 @@ package com.plj.common.tools.mybatis.page.bean;
  */
 public class PageContext extends Pagination
 {
+	private static final long serialVersionUID = -3211141287733747005L;
+
 	private static ThreadLocal<PageContext> context = new ThreadLocal<PageContext>();
 	
 	private static ThreadLocal<Boolean> isNeedPagination = new ThreadLocal<Boolean>();

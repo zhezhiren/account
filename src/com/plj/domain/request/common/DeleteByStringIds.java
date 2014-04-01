@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.plj.common.error.MyError;
+import com.plj.common.error.Problem;
 import com.plj.common.result.JsonResult;
 
 public class DeleteByStringIds implements Serializable
@@ -37,7 +37,7 @@ public class DeleteByStringIds implements Serializable
 					intIds.add(Integer.parseInt(ids.get(i)));
 				}catch (Exception e) 
 				{
-					result.addError(new MyError(MyError.CommonCode.DELETE_PARAM_ERROR, MyError.CommonMsg.DELETE_PARAM_ERROR));
+					result.addProblem(new Problem(Problem.CommonCode.DELETE_PARAM_ERROR, Problem.CommonMsg.DELETE_PARAM_ERROR));
 					result.setData(null);
 				}
 			}
@@ -52,7 +52,7 @@ public class DeleteByStringIds implements Serializable
 		
 		if(null == ids ||ids.size() <= 0)
 		{
-			result.addError(new MyError(MyError.CommonCode.DELETE_IDS_NULL, MyError.CommonMsg.DELETE_IDS_NULL));
+			result.addProblem(new Problem(Problem.CommonCode.DELETE_IDS_NULL, Problem.CommonMsg.DELETE_IDS_NULL));
 		}
 		return result;
 	}
